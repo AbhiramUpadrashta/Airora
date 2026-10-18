@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Airora — world radio</title>
+<meta name="description" content="Listen to 50,000+ live radio stations from every country. Free, by Abhiram Upadrashta. Powered by Bubbles.">
+<meta name="theme-color" content="#05060f">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="../img/airora.svg"><link rel="apple-touch-icon" href="../img/airora-180.png">
+<meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="app.css?v=7554405">
+</head>
+<body>
+<div class="aurora" aria-hidden="true"><i></i><i></i><i></i></div>
+
+<header class="top">
+  <a class="brand" href="../" title="Airora website"><img src="../img/airora.svg" alt=""><b>Airora</b></a>
+  <button class="country" id="countryBtn" title="Choose a country"><img id="cFlag" alt=""><span id="cName">Choose country</span><svg viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></button>
+  <div class="grow"></div>
+  <label class="search"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="q" placeholder="Search stations" autocomplete="off" aria-label="Search stations"></label>
+  <button class="ib hidden" id="installBtn" title="Install Airora"><svg viewBox="0 0 24 24"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg></button>
+  <button class="ib hidden" id="updBtn" title="Check for updates"><svg viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.3-5.6M20 4v5h-5"/></svg></button>
+</header>
+
+<nav class="views" id="views">
+  <button data-v="browse" class="on">Stations</button>
+  <button data-v="favs">Favourites <em id="favN"></em></button>
+  <button data-v="recent">Recent</button>
+</nav>
+<div class="chips" id="chips"></div>
+
+<main id="main">
+  <div class="head"><h1 id="title">Stations</h1><span id="count" class="muted"></span></div>
+  <div class="grid" id="grid"></div>
+  <div class="more" id="more"></div>
+</main>
+
+<!-- country picker -->
+<div class="sheet hidden" id="sheet" role="dialog" aria-label="Choose a country">
+  <div class="sheetIn">
+    <div class="sheetTop"><h2>Choose a country</h2><button class="ib" id="sheetX" title="Close"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
+    <label class="search big"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="cq" placeholder="Search 240 countries" autocomplete="off"></label>
+    <div class="clist" id="clist"></div>
+  </div>
+</div>
+
+<!-- mini player -->
+<div class="bar hidden" id="bar">
+  <button class="barMain" id="barOpen" title="Open player"><span class="logo sm" id="bLogo"></span><span class="bt"><b id="bName"></b><small id="bSub"></small></span></button>
+  <span class="live" id="bLive"><i></i><i></i><i></i><i></i></span>
+  <button class="ib" id="bPrev" title="Previous station"><svg viewBox="0 0 24 24"><path d="M7 6v12M18 6l-8 6 8 6z"/></svg></button>
+  <button class="play" id="bPlay" title="Play / pause"><svg class="i-play" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg><svg class="i-pause" viewBox="0 0 24 24"><path d="M7 5h4v14H7zM13 5h4v14h-4z"/></svg><span class="spin"></span></button>
+  <button class="ib" id="bNext" title="Next station"><svg viewBox="0 0 24 24"><path d="M17 6v12M6 6l8 6-8 6z"/></svg></button>
+</div>
+
+<!-- full player -->
+<section class="np hidden" id="np" aria-label="Now playing">
+  <div class="npTop">
+    <button class="ib" id="npClose" title="Close"><svg viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></button>
+    <span class="npOn"><i class="dot"></i> <span id="npState">Live</span></span>
+    <button class="ib" id="npShare" title="Share station"><svg viewBox="0 0 24 24"><path d="M12 3v13M7 8l5-5 5 5M5 14v6h14v-6"/></svg></button>
+  </div>
+  <div class="stage">
+    <canvas id="viz" width="720" height="720"></canvas>
+    <div class="orb"><span class="logo xl" id="npLogo"></span></div>
+  </div>
+  <div class="npInfo">
+    <h2 id="npName"></h2>
+    <p id="npSub" class="muted"></p>
+    <div class="tags" id="npTags"></div>
+  </div>
+  <div class="npCtrls">
+    <button class="ib lg" id="npFav" title="Favourite"><svg viewBox="0 0 24 24"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg></button>
+    <button class="ib lg" id="npPrev" title="Previous station"><svg viewBox="0 0 24 24"><path d="M7 6v12M18 6l-8 6 8 6z"/></svg></button>
+    <button class="play xl" id="npPlay" title="Play / pause"><svg class="i-play" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg><svg class="i-pause" viewBox="0 0 24 24"><path d="M7 5h4v14H7zM13 5h4v14h-4z"/></svg><span class="spin"></span></button>
+    <button class="ib lg" id="npNext" title="Next station"><svg viewBox="0 0 24 24"><path d="M17 6v12M6 6l8 6-8 6z"/></svg></button>
+    <button class="ib lg" id="npSleep" title="Sleep timer"><svg viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/></svg><em id="sleepT"></em></button>
+  </div>
+  <div class="vol"><svg viewBox="0 0 24 24" id="muteBtn"><path d="M4 9h4l5-4v14l-5-4H4zM16 9a4 4 0 0 1 0 6"/></svg><input type="range" id="vol" min="0" max="1" step="0.01" value="1" aria-label="Volume"></div>
+  <div class="npLinks"><a id="npHome" target="_blank" rel="noopener">Station website</a><span class="muted small" id="npTech"></span></div>
+  <div class="npErr hidden" id="npErr"><b id="errT"></b><span id="errS"></span><div><button class="pill" id="errRetry">Try again</button><button class="pill on" id="errNext">Next station</button></div></div>
+</section>
+
+<div class="menu hidden" id="sleepMenu"></div>
+<div class="toast" id="toast"></div>
+<div id="upd" class="upd hidden"><img src="../img/airora.svg" alt=""><div><b id="updT"></b><small id="updS"></small></div><a id="updGo" class="updgo" target="_blank" rel="noopener">Update</a><button id="updX" class="updx" title="Later">✕</button></div>
+<footer class="foot"><a href="https://abhiramupadrashta.github.io/" target="_blank" rel="noopener">Powered by <b>Bubbles</b></a> · Station list from the community <a href="https://www.radio-browser.info/" target="_blank" rel="noopener">Radio Browser</a> · <a href="../LICENSE.txt" target="_blank">MIT</a></footer>
+<script type="module" src="app.js?v=7554405"></script>
+</body>
+</html>
